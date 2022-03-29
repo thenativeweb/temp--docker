@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+  hello-world:
+    build: ./app
+    ports:
+      - "4000:4000"w
+    environment:
+      PORT: "4000"
+      MESSAGE: "Un, deux, trois – bienvenue"
+    depends_on:
+      - webserver
+    init: true
+    restart: always
+    # command: [ "wait-for-it", "webserver:3000", "--", "node", "app.js" ]
+    # env_file:
+    #   - .env
+    # networks:
+    #   - frontend
+  webserver:
+    image: nginx:${NGINX_VERSION}-alpine
+    ports:
+      - "3000:80"
+    volumes:
+      - ./client:/usr/share/nginx/html:ro
+    depends_on:
+      - database
+    init: true
+    restart: always
+    # networks:
+    #   - frontend
+    #   - backend
+  database:
+    image: postgres:14.2-alpine3.15
+    init: true
+    restart: always
+    # networks:
+    #   - backend
+
+# networks:
+#   default:
+#     driver: host
+  # frontend:
+  #   driver: bridge
+  # backend:
+  #   driver: bridge
